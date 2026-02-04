@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import HomeImg from '../assets/Homeimg.avif';
 import Header from './Header';
 import Footer from './Footer';
@@ -30,12 +31,51 @@ const techStack = [
   'Data pipelines and AI-powered automation',
 ];
 
+function FadeInSection({ children, delay = 0 }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0px)' : 'translateY(24px)',
+        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function IncrosysPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Header />
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+        <FadeInSection>
         <section
           className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-slate-900/80 text-white"
           style={{
@@ -98,7 +138,9 @@ function IncrosysPage() {
             </div>
           </div>
         </section>
+        </FadeInSection>
 
+        <FadeInSection delay={100}>
         <section className="mt-10 sm:mt-14">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900">What we do</h2>
@@ -116,7 +158,9 @@ function IncrosysPage() {
             ))}
           </div>
         </section>
+        </FadeInSection>
 
+        <FadeInSection delay={150}>
         <section className="mt-10 sm:mt-14 rounded-2xl sm:rounded-3xl bg-slate-900 px-4 sm:px-6 md:px-8 py-8 sm:py-10 text-white shadow-xl">
           <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-center">
             <div>
@@ -150,7 +194,9 @@ function IncrosysPage() {
             </div>
           </div>
         </section>
+        </FadeInSection>
 
+        <FadeInSection delay={200}>
         <section className="mt-10 sm:mt-14">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900">IT Operations Excellence</h2>
@@ -167,7 +213,9 @@ function IncrosysPage() {
             ))}
           </div>
         </section>
+        </FadeInSection>
 
+        <FadeInSection delay={250}>
         <section className="mt-10 sm:mt-14 rounded-2xl sm:rounded-3xl border border-slate-200 bg-white px-4 sm:px-6 py-6 sm:py-8 shadow-sm">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900">Technology Stack & Tooling</h2>
           <p className="mt-2 text-xs sm:text-sm text-slate-600">Battle-tested platforms and tooling we deploy for resilient IT operations.</p>
@@ -179,6 +227,7 @@ function IncrosysPage() {
             ))}
           </div>
         </section>
+        </FadeInSection>
       </main>
 
       <Footer />
